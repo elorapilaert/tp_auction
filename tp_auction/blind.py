@@ -49,3 +49,5 @@ class BlindAuction():
 if __name__ == "__main__":
     auction = BlindAuction()
     auction.play()
+
+
