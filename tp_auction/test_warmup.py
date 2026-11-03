@@ -40,8 +40,7 @@ class Animal:
     """
 
     def __init__(self, name):
-        # TODO : Créez l'attribut self.name avec le paramètre name
-        pass
+        self.name=name
 
     def sound(self):
         """
@@ -61,27 +60,37 @@ class Animal:
 
 
 class Dog(Animal):
-    """
-    Classe fille d'Animal.
-    Hérite de tout le code d'Animal (init, describe).
 
-    TODO : Vous devez uniquement redéfinir sound() pour retourner "Woof"
-    Ne réécrivez PAS describe() ! Elle est héritée d'Animal.
-    """
+    def sound(self):
+        return "Woof"
 
-    # TODO : Redéfinissez la méthode sound() pour retourner "Woof"
-    pass
 
 
 class Cat(Animal):
-    """
-    Classe fille d'Animal.
-    TODO : Redéfinissez sound() pour retourner "Meow"
-    """
+   
+   def sound(self):
+       return "Meow"
 
-    # TODO : Redéfinissez la méthode sound() pour retourner "Meow"
-    pass
+# pour tester
 
+try:
+    assert Dog("Rex").describe() == "Rex says Woof"
+    assert Cat("Tom").describe() == "Tom says Meow"
+    assert Animal("Ghost").describe() == "Ghost says ..."
+    assert isinstance(Dog("Rex"), Animal)
+    assert issubclass(Cat, Animal)
+    assert "describe" not in vars(Dog), "describe must be inherited, not rewritten"
+except Exception as e:
+    print("OOPS - Something's wrong")
+    print(f"Error message : {e}")
+else:
+    print('Congrats ! Your implementation works !')
+
+#Q1) la fonction remonte de la branche fille, à la branche mère. Ainsi, on va chercher sound dans la branche fille, et, si il est présent dans la branche fille, utiliser celui-ci et non celui de la branche mère.
+
+print(Dog.__mro__)
+
+#Q2) cela retourne (<class '__main__.Dog'>, <class '__main__.Animal'>, <class 'object'>) soit les classes de la classe fille à la classe mère
 
 class Bird(Animal):
     """
@@ -98,15 +107,35 @@ class Bird(Animal):
     """
 
     def __init__(self, name, can_fly=True):
-        # TODO : Appelez super().__init__(name) puis stockez can_fly
+        super().__init__(name)
+        self.can_fly=can_fly
         pass
 
-    # TODO : Redéfinissez sound() pour retourner "Tweet"
-    pass
+    def sound(self):
+        return "Tweet"
 
-    # TODO : Redéfinissez describe() pour compléter celle du parent
-    pass
+    def describe(self):
+        if self.can_fly :
+            return f"{super().describe()} and flies"
+        return super().describe()
 
+
+
+# pour tester
+
+try:
+    assert Bird("Tweety").describe() == "Tweety says Tweet and flies"
+    assert Bird("Pingu", can_fly=False).describe() == "Pingu says Tweet"
+    assert Bird("Tweety").name == "Tweety"
+except Exception as e:
+    print("OOPS - Something's wrong")
+    print(f"Error message : {e}")
+else:
+    print('Congrats ! Your implementation works !')
+
+
+#Q1) on initialise pas la commande self.name, ce qui pose problème dans le reste du code
+#Q2) Ne pas initialiser le sound dans la classe mère mais l'initialiser dans les classes filles
 
 # =============================================================================
 # ÉCHAUFFEMENT 2 : LES TESTS UNITAIRES ET LES MOCKS
@@ -156,14 +185,14 @@ class TestAnimals(unittest.TestCase):
     Utilisez "with self.assertRaises(TypeError):" pour le test 3
     """
 
-    # TODO : Écrivez le test pour Dog
-    pass
+    def test_dog(self):
+        self.assertEqual("Rex says Woof", Dog("Rex").describe())
 
-    # TODO : Écrivez le test pour Bird qui ne vole pas
-    pass
+    def test_bird_no_fly(self):
+        self.assertEqual("Pingu says Tweet", Bird("Pingu", can_fly=False).describe())
 
-    # TODO : Écrivez le test pour Dog sans nom (doit lever TypeError)
-    pass
+    def test_dog_needs_name(self):
+        with self.assertRaises(TypeError): Dog()
 
 
 class Greeter:
@@ -196,16 +225,28 @@ class ScriptedCli:
     """
 
     def __init__(self, answers):
-        # TODO : Stockez les réponses et initialisez displayed
-        pass
+        self.answers= answers
+        self.displayed=[]
 
     def display(self, message):
-        # TODO : Ajoutez le message à displayed
-        pass
+        self.displayed.append(message)
 
     def prompt(self, message):
-        # TODO : Ajoutez le message à displayed et retournez la première réponse
-        pass
+        self.display(message)
+        return self.answers.pop(0)
+
+
+# pour tester
+
+try:
+    cli = ScriptedCli(["Ada"])
+    Greeter(cli).play()
+    assert cli.displayed == ["What is your name?", "Hello Ada!"], cli.displayed
+except Exception as e:
+    print("OOPS - Something's wrong")
+    print(f"Error message : {e}")
+else:
+    print('Congrats ! Your implementation works !')
 
 
 # =============================================================================
