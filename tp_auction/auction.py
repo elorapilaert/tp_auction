@@ -12,13 +12,14 @@ class Auction() :
             self.opening_bid =None
             self.winner =None
             self.bidders=[]
+            self.standing_bid=None
     
     def play(self):
         # Input opening bid
         self.cli.display('Started auction of type: Blind')
         opening_bid= self.cli.prompt('Please enter the amount for the opening bid:')
         self.opening_bid= int(opening_bid)
-        self.cli.display(f"Opening bid is: {self.opening_bid()}")
+        self.cli.display(f"Opening bid is: {self.opening_bid}")
     
         # Input bidders
         self.bidders=[]
@@ -57,14 +58,14 @@ class BlindAuction(Auction):
                 f"Opening bid is {self.opening_bid(())}. {bidder} bids:"
             )
             bid = int(bid)
-            if bid > standing_bid:
-                standing_bid = bid
+            if bid > self.standing_bid:
+                self.standing_bid = bid
                 self.winner = bidder
 
 class EnglishAuction(Auction):
 
      def auction_loop(self):
-        standing_bid = self.opening_bid
+        self.standing_bid = self.opening_bid
         self.winner = None
         bidders=self.bidders
         bid_state=[True for k in range(len(bidders))]
@@ -78,12 +79,30 @@ class EnglishAuction(Auction):
                     bid_state[k]=False
                 else :
                     bid = int(bid)
-                if bid > standing_bid:
-                    standing_bid = bid
+                if bid > self.standing_bid:
+                    self.standing_bid = bid
                     self.winner = bidder
                     End=[False for k in range(len(bidders))]
 
 
+class BlindAuction(Auction):
+
+    
+    def auction_loop(self):
+
+        standing_bid = self.opening_bid
+        old_bid=self.opening_bid
+        self.winner = None
+        for bidder in self.bidders:
+            bid = self.cli.prompt(
+                f"Opening bid is {self.opening_bid(())}. {bidder} bids:"
+            )
+            bid = int(bid)
+            if bid > standing_bid:
+                old_bid=standing_bid
+                self.standing_bid = bid
+                self.winner = bidder
+        self.standing_bid=old_bid
 
 
 
