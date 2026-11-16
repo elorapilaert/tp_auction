@@ -87,6 +87,9 @@ class EnglishAuction(Auction):
 
 
 
+
+
+
 if __name__ == "__main__":
         auction = BlindAuction() #à changer si on veut changer de type d'enchères
         auction.play()
