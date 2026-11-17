@@ -85,7 +85,7 @@ class EnglishAuction(Auction):
                     End=[False for k in range(len(bidders))]
 
 
-class BlindAuction(Auction):
+class VickreyAuction(Auction):
 
     
     def auction_loop(self):
